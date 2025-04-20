@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>センサー許可テスト（詳細）</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: white;
+      font-family: sans-serif;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+    #startButton {
+      padding: 16px 32px;
+      font-size: 18px;
+      background: white;
+      color: black;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-bottom: 20px;
+    }
+    #status {
+      font-size: 16px;
+      white-space: pre-wrap;
+      text-align: center;
+      padding: 12px;
+      background: #222;
+      border-radius: 8px;
+      max-width: 90%;
+    }
+  </style>
+</head>
+<body>
+  <button id="startButton">モーションセンサーを有効にする</button>
+  <div id="status">センサーの状態はまだ確認されていません。</div>
+
+  <script>
+    const startButton = document.getElementById("startButton");
+    const statusDiv = document.getElementById("status");
+
+    startButton.addEventListener("click", () => {
+      if (typeof DeviceMotionEvent !== "undefined" &&
+          typeof DeviceMotionEvent.requestPermission === "function") {
+
+        DeviceMotionEvent.requestPermission()
+          .then(response => {
+            if (response === "granted") {
+              alert("✅ 許可されました！");
+              statusDiv.innerText = "✅ センサーの使用が許可されました。";
+              setTimeout(() => {
+                alert("🎉 Hello, AR! Three.jsも動かせます！");
+                statusDiv.innerText += "\n🎉 Hello, AR! 表示成功。";
+              }, 500);
+            } else {
+              alert("❌ 許可されませんでした：" + response);
+              statusDiv.innerText = "❌ センサーの使用が拒否されました。";
+            }
+          })
+          .catch(err => {
+            alert("⚠️ エラー発生：" + err.message);
+            statusDiv.innerText = "⚠️ エラー：" + err.message;
+          });
+
+      } else {
+        alert("この端末では requestPermission は必要ありません。");
+        statusDiv.innerText = "✅ 非iOS環境または対応済み端末。";
+      }
+    });
+  </script>
+</body>
+</html>
