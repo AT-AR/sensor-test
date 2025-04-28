@@ -81,11 +81,10 @@
         }, 'image/jpeg');
       });
 
-      // ジャイロ対応
       if (window.DeviceOrientationEvent) {
         window.addEventListener('deviceorientation', (event) => {
-          const gamma = event.gamma || 0; // 左右の傾き
-          const beta = event.beta || 0;   // 前後の傾き
+          const gamma = event.gamma || 0;
+          const beta = event.beta || 0;
           character.rotation.y = THREE.MathUtils.degToRad(gamma);
           character.rotation.x = THREE.MathUtils.degToRad(beta);
         }, true);
@@ -102,6 +101,11 @@
 
     function animate() {
       requestAnimationFrame(animate);
+
+      if (videoTexture) {
+        videoTexture.needsUpdate = true; // ★これを追加してリアルタイム反映！
+      }
+
       renderer.render(scene, camera);
     }
   </script>
